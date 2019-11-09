@@ -12,6 +12,8 @@
 bin/
 gen/
 out/
+app/.cxx
+.idea
 
 # Gradle files
 .gradle/

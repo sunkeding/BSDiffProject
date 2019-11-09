@@ -12,6 +12,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.keding.nativeutil.BSDiffUtil;
+import com.keding.nativeutil.NativeRegisterUtil;
 
 import java.io.File;
 
@@ -32,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         dealPatch();
         Log.d("MainActivity", BSDiffUtil.getStringFromJni());
+        Log.d("MainActivity", NativeRegisterUtil.getStringFromNative());
+        Log.d("MainActivity", NativeRegisterUtil.getStringFromNative2());
     }
 
     private void dealPatch() {

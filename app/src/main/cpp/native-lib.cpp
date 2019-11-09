@@ -8,6 +8,8 @@
 
 #define LOGI(...) \
   ((void)__android_log_print(ANDROID_LOG_INFO, "native-libs::", __VA_ARGS__))
+//定义一个宏
+#define JAVA_CLASS_PATH "com/keding/nativeutil/NativeRegisterUtil"
 
 extern "C" JNIEXPORT jstring JNICALL
 Java_com_keding_nativeutil_BSDiffUtil_getStringFromJni(
@@ -19,13 +21,13 @@ Java_com_keding_nativeutil_BSDiffUtil_getStringFromJni(
 }
 extern "C" {
 extern int main(int argc, char *argv[]);
-extern int genpatch(int argc,char *argv[]);
+extern int genpatch(int argc, char *argv[]);
 }
 
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_keding_nativeutil_BSDiffUtil_bsPatch(JNIEnv *env, jclass clazz, jstring old_apk,
-                                            jstring patch, jstring output) {
+                                              jstring patch, jstring output) {
     int argc2 = 4;
     char *argv2[argc2];
     argv2[0] = const_cast<char *>("bspatch");
@@ -47,7 +49,7 @@ Java_com_keding_nativeutil_BSDiffUtil_bsPatch(JNIEnv *env, jclass clazz, jstring
 }extern "C"
 JNIEXPORT jint JNICALL
 Java_com_keding_nativeutil_BSDiffUtil_genDiff(JNIEnv *env, jclass clazz, jstring old_apk_path,
-                                            jstring new_apk_path, jstring patch_path) {
+                                              jstring new_apk_path, jstring patch_path) {
 
     int argc = 4;
     char *argv[argc];
@@ -70,35 +72,41 @@ Java_com_keding_nativeutil_BSDiffUtil_genDiff(JNIEnv *env, jclass clazz, jstring
     env->ReleaseStringUTFChars(patch_path, argv[3]);
 }
 
-//extern "C"
-//JNIEXPORT jstring JNICALL
-//Java_com_keding_cdemo2_MainActivity_getStringFromJni(JNIEnv *env, jobject thiz) {
-//    __android_log_print(ANDROID_LOG_DEBUG, "native-lib::", "hello native log");
-//    __android_log_print(ANDROID_LOG_INFO, "native-lib::", "hello native log2");
-//
-//        LOGI("XIXIXI");
-//    return env->NewStringUTF("Hello from JNI LIBS!");
-//}
 
 
+// 注册的方式,推荐
 
-//extern "C"
-//JNIEXPORT void JNICALL
-//Java_com_keding_nativeutil_BSDiffUtil_bsPatch(JNIEnv *env, jclass clazz, jstring old_apk,
-//                                              jstring patch, jstring output) {
-//
-//
-//}
-//extern "C"
-//JNIEXPORT jstring JNICALL
-//Java_com_keding_nativeutil_BSDiffUtil_getStringFromJni(JNIEnv *env, jclass clazz) {
-//
-//
-//}
-//extern "C"
-//JNIEXPORT jint JNICALL
-//Java_com_keding_nativeutil_BSDiffUtil_genDiff(JNIEnv *env, jclass clazz, jstring old_apk_path,
-//                                              jstring new_apk_path, jstring patch_path) {
-//
-//
-//}
+extern "C"
+JNIEXPORT jstring JNICALL
+get_string_register(JNIEnv *env, jclass clazz) {
+
+    return env->NewStringUTF("我是来自C++的通过注册的方式调用的方法");
+}
+
+extern "C"
+JNIEXPORT jstring JNICALL
+get_string_register2(JNIEnv *env, jclass clazz) {
+
+    return env->NewStringUTF("我是来自C++的通过注册的方式调用的方法22222222");
+}
+
+// 后续添加新方法
+static JNINativeMethod g_methods[] = {
+        {"getStringFromNative", "()Ljava/lang/String;", (void *) get_string_register},
+        {"getStringFromNative2", "()Ljava/lang/String;", (void *) get_string_register2}
+
+};
+
+// 库被加载到虚拟机的时候自动触发该函数
+jint JNI_OnLoad(JavaVM *vm, void *reserved) {
+    JNIEnv *env = NULL;
+    LOGI("jclazz1");
+    vm->GetEnv(reinterpret_cast<void **>(&env), JNI_VERSION_1_6);
+    jclass jclazz = env->FindClass(JAVA_CLASS_PATH);
+    LOGI("jclazz");
+    // 方法映射表和方法数
+    env->RegisterNatives(jclazz, g_methods, sizeof(g_methods) / sizeof(g_methods[0]));
+    return JNI_VERSION_1_6;
+}
+
+
