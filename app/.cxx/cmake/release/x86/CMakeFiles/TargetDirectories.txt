@@ -1,3 +1,0 @@
-/Users/skd/Downloads/CDemo2/app/.cxx/cmake/release/x86/CMakeFiles/rebuild_cache.dir
-/Users/skd/Downloads/CDemo2/app/.cxx/cmake/release/x86/CMakeFiles/edit_cache.dir
-/Users/skd/Downloads/CDemo2/app/.cxx/cmake/release/x86/CMakeFiles/bsdiff.dir
